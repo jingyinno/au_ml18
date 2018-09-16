@@ -154,6 +154,8 @@ def square_transform(X):
     Xt = X
 
     ### YOUR CODE HERE 2-4 lines
+    Xt = np.squre(Xt)
+    Xt = np.append(np.ones(Xt.shape[0],1)),Xt, axis = 1)
     ### END CODE 
     
     return Xt
@@ -227,6 +229,12 @@ def plot_data():
     fig, axes = plt.subplots(1, 4, figsize=(20, 20))
     
     ### YOUR CODE 
+    X1 = D['X1']
+    y1 = D['y1']
+    plt.scatter(X1[:,0], X1[:,1], c=y1, cmap=plt.cm.Paired, s=20)
+    X2 = D['X2']
+    y2 = D['y2']
+    plt.scatter(X2[:,0], X2[:,1], c=y2, cmap=plt.cm.Paired, s=20)
     ### END CODE
     plt.show()
 
@@ -364,6 +372,7 @@ class LinRegClassifier():
         """
         pred = None
         ### YOUR CODE HERE 1-2 lines
+        pred = np.sign(np.dot(self,w,np.transpose(X))) #x,0,self,w
         ### END CODE
         return pred
 
@@ -377,12 +386,13 @@ class LinRegClassifier():
         """
         score = 0 
         ### YOUR CODE HERE 1-3 lines
+        #take means of 1 when correct 
+        scoreVect = np.abs(self.predict(X) - y)
+        score = 1 - np.sum(scoreVect) / len(y) #1-0, and in all other cases is 1-sth
         ### END CODE
         return score
 
         
-        
-
         
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
