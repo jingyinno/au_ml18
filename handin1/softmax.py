@@ -26,6 +26,20 @@ def softmax(X):
     """
     res = np.zeros(X.shape)
     ### YOUR CODE HERE no for loops please
+    maxX = np.amax(X, axis=1, keepdims=True)
+    withoutMax = X - maxX
+    expWithoutMax = np.exp(withoutMax)
+    sumExpWithoutMax = np.sum(expWithoutMax, axis=1, keepdims=True)
+    lnSumExpWithoutMax = np.log(sumExpWithoutMax)
+    clnSumExpWithoutMax = maxX + lnSumExpWithoutMax
+    XMinusCLn = X - clnSumExpWithoutMax
+    expXMinusCLn = np.exp(XMinusCLn)
+    res = expXMinusCLn
+    
+#     denominator = np.sum(np.exp(X), axis = 1)
+#     softmax = np.exp(X) / denominator.reshape((len(X), 1))
+#     assert np.allclose(res, softmax), "SOFTMAX NOT EQUAL"
+
     ### END CODE
     return res
 
@@ -65,11 +79,23 @@ class SoftmaxClassifier():
         grad = np.zeros(W.shape)*np.nan
         Yk = one_in_k_encoding(y, self.num_classes) # may help - otherwise you may remove it
         ### YOUR CODE HERE
+        cost = 0
+        for i, j in zip(X, Yk):
+            log_softmax = np.log(softmax(np.dot(i.T, W).reshape((1,W.shape[1]))))
+#             print("log softmax shape", log_softmax.shape)
+#             print("j shape", j.shape)
+            c = np.dot(log_softmax, j)
+            cost += c
+        cost = -cost / len(X)
+#         print("cost shape", cost.shape)
+        grad = -np.matmul(X.T, (Yk - softmax(np.matmul(X, W)))) / len(X)
+#         print("grad")
+#         print(grad)
         ### END CODE
         return cost, grad
 
 
-    def fit(self, X, Y, W=None, lr=0.01, epochs=10, batch_size=16):
+    def fit(self, X, Y, W=None, lr=0.01, epochs=30, batch_size=16):
         """
         Run Mini-Batch Gradient Descent on data X,Y to minimize the in sample error (1/n)NLL for softmax regression.
         Printing the performance every epoch is a good idea to see if the algorithm is working
@@ -89,6 +115,16 @@ class SoftmaxClassifier():
         if W is None: W = np.zeros((X.shape[1], self.num_classes))
         history = []
         ### YOUR CODE HERE
+        batches = int(len(Y) / batch_size) + 1
+        for i in range(epochs):
+            counter = 0
+            for j in range(batches):
+                batchX = X[counter:counter + batch_size]
+                batchy = Y[counter:counter + batch_size]
+                cost,grad = self.cost_grad(batchX, batchy, W)
+                W = W - lr * grad
+                counter = counter + batch_size
+            history.append(cost)
         ### END CODE
         self.W = W
         self.history = history
@@ -105,6 +141,13 @@ class SoftmaxClassifier():
         """
         out = 0
         ### YOUR CODE HERE 1-4 lines
+        print("y", Y)
+        print("test score")
+        pred = self.predict(X)
+        for i, j in zip(pred, Y):
+            if (i == j):
+                out = out + 1
+        out = out / len(Y)
         ### END CODE
         return out
 
@@ -118,6 +161,15 @@ class SoftmaxClassifier():
         """
         out = np.zeros(X.shape[0])
         ### YOUR CODE HERE - 1-4 lines
+        expX = np.exp(X)
+        sumExpX = np.sum(expX, axis=1, keepdims=True)
+        divExpX = expX / sumExpX
+        predY = []
+#         for i in divExpX:
+#             predY.append(np.argmax((i.T @ self.W)))
+        predY = np.argmax((divExpX @ self.W), axis=1)
+        print("predY", predY)
+        out = predY
         ### END CODE
         return out
     
