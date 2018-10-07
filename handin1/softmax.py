@@ -141,8 +141,8 @@ class SoftmaxClassifier():
         """
         out = 0
         ### YOUR CODE HERE 1-4 lines
-        print("y", Y)
-        print("test score")
+        #print("y", Y)
+        #print("test score")
         pred = self.predict(X)
         for i, j in zip(pred, Y):
             if (i == j):
@@ -161,15 +161,7 @@ class SoftmaxClassifier():
         """
         out = np.zeros(X.shape[0])
         ### YOUR CODE HERE - 1-4 lines
-        expX = np.exp(X)
-        sumExpX = np.sum(expX, axis=1, keepdims=True)
-        divExpX = expX / sumExpX
-        predY = []
-#         for i in divExpX:
-#             predY.append(np.argmax((i.T @ self.W)))
-        predY = np.argmax((divExpX @ self.W), axis=1)
-        print("predY", predY)
-        out = predY
+        out = np.argmax((X @ self.W), axis=1)
         ### END CODE
         return out
     

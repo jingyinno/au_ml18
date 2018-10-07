@@ -84,11 +84,9 @@ class LogisticRegressionClassifier():
         history = []        
         ### YOUR CODE HERE 14 - 20 lines
         batches = int(len(y) / batch_size) + 1
-        #w = np.random.permutation(len(X[0]))
         for i in range(epochs):
             counter = 0
             for j in range(batches):
-                #batch_size = min(batch_size, len(X) - counter - 1)  
                 batchX = X[counter:counter + batch_size]
                 batchy = y[counter:counter + batch_size]
                 cost,grad = self.cost_grad(batchX, batchy, w)

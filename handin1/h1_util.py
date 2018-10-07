@@ -64,12 +64,6 @@ def numerical_grad_check(f, x):
         cminus, _ = f(x)
         x[dim] = tmp
         num_grad = (cplus-cminus)/(2*h)
-        print("expected")
-        print(num_grad)
-        print("m")
-        print(grad)
-        print("end")
-        print('grad, num_grad, grad-num_grad', grad[dim], num_grad, grad[dim]-num_grad)
         assert np.abs(num_grad - grad[dim]) < eps, 'numerical gradient error index {0}, numerical gradient {1}, computed gradient {2}'.format(dim, num_grad, grad[dim])
         it.iternext()
 
