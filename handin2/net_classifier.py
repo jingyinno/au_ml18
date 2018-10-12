@@ -38,6 +38,15 @@ def softmax(X):
     """
     res = np.zeros(X.shape)
     ### YOUR CODE HERE no for loops please
+    maxX = np.amax(X, axis=1, keepdims=True)
+    withoutMax = X - maxX
+    expWithoutMax = np.exp(withoutMax)
+    sumExpWithoutMax = np.sum(expWithoutMax, axis=1, keepdims=True)
+    lnSumExpWithoutMax = np.log(sumExpWithoutMax)
+    clnSumExpWithoutMax = maxX + lnSumExpWithoutMax
+    XMinusCLn = X - clnSumExpWithoutMax
+    expXMinusCLn = np.exp(XMinusCLn)
+    res = expXMinusCLn
     ### END CODE
     return res
 
@@ -51,6 +60,7 @@ def relu(x):
         Beware of np.max and look at np.maximum
     """
     ### YOUR CODE HERE
+    res = np.max(
     ### END CODE
     return res
 
@@ -96,6 +106,9 @@ class NetClassifier():
             params = self.params
         pred = None
         ### YOUR CODE HERE
+        A1 = TODO
+        A2 = TODO(A1)
+        pred = np.argmax(A2, axis=1)
         ### END CODE
         return pred
      
@@ -114,6 +127,11 @@ class NetClassifier():
             params = self.params
         acc = None
         ### YOUR CODE HERE
+        pred = self.predict(X)
+        for i, j in zip(pred, Y):
+            if (i == j):
+                acc = acc + 1
+        acc = acc / len(Y)
         ### END CODE
         return acc
     
@@ -181,6 +199,21 @@ class NetClassifier():
         b2 = init_params['b2']
 
         ### YOUR CODE HERE
+        batches = int(len(Y) / batch_size) + 1
+        #permutate rows in X
+        for i in range(epochs):
+            counter = 0
+            for j in range(batches):
+                batchX = X[counter:counter + batch_size]
+                batchy = Y[counter:counter + batch_size]
+                cost,grad = self.cost_grad(batchX, batchy, init_params, reg)
+                W1 = W1 - lr * grad
+                W2 = W2 - lr * grad
+                b1 = b1 - lr * grad
+                b2 = b2 - lr * grad
+        
+                counter = counter + batch_size
+            history.append(cost) 
         ### END CODE
         # hist dict should look like this with something different than none
         self.history = {
