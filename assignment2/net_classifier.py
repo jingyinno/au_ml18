@@ -175,15 +175,14 @@ class NetClassifier():
         
         log_softmax = np.log(softmax(A2))
         entropy = np.sum(log_softmax * labels)
-        entropy = -entropy #/ len(X)
+        entropy = -entropy 
         decay = reg * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
         
         cost = entropy + decay
         grad = -labels + softmax(A2)
-        # b2: (1, h) grad: (b, h)
-        d_b2 = grad.sum(axis=0, keepdims=True) #/ len(X)
-        d_w2 = 2*reg*W2 + (reluA1.T @ grad) #/ len(X)
-        d_RA1 = grad @ W2.T #/ len(X)
+        d_b2 = grad.sum(axis=0, keepdims=True) 
+        d_w2 = 2*reg*W2 + (reluA1.T @ grad) 
+        d_RA1 = grad @ W2.T 
         d_A1 = d_RA1 * np.where(A1 > 0, 1, 0)
         d_b1 = d_A1.sum(axis=0, keepdims=True)
         d_w1 = X.T @ d_A1 + 2*reg*W1
@@ -251,12 +250,10 @@ class NetClassifier():
             val_loss_arr.append(val_loss)
             train_acc_arr.append(train_acc)
             val_acc_arr.append(val_acc)
-            print(f"Train loss {train_loss} val loss: {val_loss} at epoch {i}")
-            print(f"Acc train: {train_acc} Acc val: {val_acc}")
         ### END CODE
         # hist dict should look like this with something different than none
         self.history = {
-            'train_loss': np.array(train_loss_arr), # an array of training losses (lenght epochs)
+            'train_loss': np.array(train_loss_arr),
             'train_acc': np.array(train_acc_arr),
             'val_loss': np.array(val_loss_arr),
             'val_acc': np.array(val_acc_arr), 

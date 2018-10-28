@@ -41,7 +41,7 @@ def load_digits_test_data():
     return load_au_data(filename)
     
 
-def digits_test(hidden_size=256, epochs=50, batch_size=16, lr=0.1, reg=1e-4):
+def digits_test(hidden_size=256, epochs=200, batch_size=30, lr=0.0001, reg=1e-2):
     net = NetClassifier()
     digits, labels = load_digits_train_data()
     digits_train, digits_val, labels_train, labels_val = train_test_split(digits, labels, test_size=0.15, random_state=42)
